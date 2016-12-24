@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:default-servlet-handler/>
+    <context:component-scan base-package="controller"/>
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+    <mvc:annotation-driven/>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="jsonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sqlServerDS" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="dataSourceClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDataSource"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="1234"/>
+        <property name="autoCommit" value="false"/>
+        <property name="maximumPoolSize" value="10"/>
+    </bean>
+
+    <bean id="mySqlDS" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/amazonmoviedatamarket"/>
+        <property name="username" value="root"/>
+        <property name="password" value="1234"/>
+        <property name="autoCommit" value="false"/>
+        <property name="maximumPoolSize" value="10"/>
+    </bean>
+
+    <bean id="hiveDataSource" class="com.cloudera.hive.jdbc41.HS2DataSource">
+        <property name="userID" value="${cloudera.username}"/>
+        <property name="password" value="${cloudera.password}"/>
+        <property name="URL" value="${hive.url}"/>
+    </bean>
+
+    <bean id="hiveDS" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="dataSource" ref="hiveDataSource"/>
+        <property name="autoCommit" value="false"/>
+        <property name="maximumPoolSize" value="10"/>
+        <property name="readOnly" value="true"/>
+    </bean>
+
+    <bean id="impalaDataSource" class="com.cloudera.impala.jdbc41.DataSource">
+        <property name="URL" value="${impala.url}"/>
+        <property name="userID" value="${cloudera.username}"/>
+        <property name="password" value="${cloudera.password}"/>
+    </bean>
+
+    <bean id="impalaDS" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="dataSource" ref="impalaDataSource"/>
+        <property name="autoCommit" value="false"/>
+        <property name="maximumPoolSize" value="10"/>
+        <property name="readOnly" value="true"/>
+    </bean>
+
+    <bean id="sqlServerJdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="sqlServerDS"/>
+    </bean>
+
+    <bean id="mySqlJdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="mySqlDS"/>
+    </bean>
+
+    <bean id="hiveJdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="hiveDS"/>
+    </bean>
+
+    <bean id="impalaJdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="impalaDS"/>
+    </bean>
+
+    <bean id="jsonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+</beans>
