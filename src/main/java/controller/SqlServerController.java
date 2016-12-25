@@ -16,7 +16,7 @@ import util.DataBaseType;
  * 2016/12/24
  */
 @RestController
-@RequestMapping("/api/m")
+@RequestMapping("/api/s")
 public class SqlServerController implements IBaseController {
     private final BaseService service;
 
@@ -77,5 +77,17 @@ public class SqlServerController implements IBaseController {
     @PostMapping("/category")
     public JSONObject getMovieByCategoryId(@RequestBody JSONObject request) {
         return null;
+    }
+
+    @Override
+    @PostMapping("/movie/name/like")
+    public JSONObject getMoviesByNameLike(@RequestBody JSONObject request) {
+        return service.getMovieByNameLike(request, DataBaseType.MSSQLSERVER);
+    }
+
+    @Override
+    @PostMapping("/movie/all/year")
+    public JSONObject listAllMovieCountByYear() {
+        return service.listAllMovieCountByYear(DataBaseType.MSSQLSERVER);
     }
 }

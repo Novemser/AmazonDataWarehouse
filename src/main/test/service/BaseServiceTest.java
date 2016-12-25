@@ -37,12 +37,12 @@ public class BaseServiceTest {
     @Test
     public void getMovieCountBySeasonYear() throws Exception {
         JSONObject object = new JSONObject();
-        object.put("year", 2001);
+        object.put("year", 0);
         JSONArray array = new JSONArray();
-        array.add(false);
         array.add(true);
         array.add(true);
-        array.add(false);
+        array.add(true);
+        array.add(true);
         object.put("season", array);
         JSONObject result = service.getMovieCountByYearSeason(object, DataBaseType.MSSQLSERVER);
         System.out.println(result.toJSONString());
@@ -132,5 +132,22 @@ public class BaseServiceTest {
         result = service.getMovieCountByYearMonthDay(object, DataBaseType.IMPALA);
         System.out.println(result.toJSONString());
 
+    }
+
+    @Test
+    public void getMovieByNameLike() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("name", "picasso");
+        JSONObject result = service.getMovieByNameLike(object, DataBaseType.MSSQLSERVER);
+        System.out.println(result.toJSONString());
+        result = service.getMovieByNameLike(object, DataBaseType.IMPALA);
+        System.out.println(result.toJSONString());
+
+    }
+
+    @Test
+    public void listAllMovies() throws Exception {
+        JSONObject res = service.listAllMovieCountByYear(DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
     }
 }

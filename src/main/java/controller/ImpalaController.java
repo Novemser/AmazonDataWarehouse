@@ -77,4 +77,16 @@ public class ImpalaController implements IBaseController {
     public JSONObject getMovieByCategoryId(@RequestBody JSONObject request) {
         return null;
     }
+
+    @Override
+    @PostMapping("/movie/name/like")
+    public JSONObject getMoviesByNameLike(@RequestBody JSONObject request) {
+        return service.getMovieByNameLike(request, DataBaseType.IMPALA);
+    }
+
+    @Override
+    @PostMapping("/movie/all/year")
+    public JSONObject listAllMovieCountByYear() {
+        return service.listAllMovieCountByYear(DataBaseType.IMPALA);
+    }
 }

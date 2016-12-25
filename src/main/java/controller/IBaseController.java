@@ -21,4 +21,6 @@ public interface IBaseController {
     JSONObject getDirectorById(@RequestBody JSONObject request);
     JSONObject getActorById(@RequestBody JSONObject request);
     JSONObject getMovieByCategoryId(@RequestBody JSONObject request);
+    JSONObject getMoviesByNameLike(@RequestBody JSONObject request);
+    JSONObject listAllMovieCountByYear();
 }
