@@ -10,13 +10,13 @@ import util.DataBaseType;
  * Project: DataWarehouseServer
  * Package: controller
  * Author:  Novemser
- * 2016/12/25
+ * 2016/12/26
  */
 @RestController
-@RequestMapping("/api/i")
-public class ImpalaController extends AbstractController {
-    public ImpalaController(BaseService service) {
+@RequestMapping("/api/m")
+public class MySQLController extends AbstractController {
+    public MySQLController(BaseService service) {
         super(service);
-        type = DataBaseType.IMPALA;
+        type = DataBaseType.MYSQL;
     }
 }

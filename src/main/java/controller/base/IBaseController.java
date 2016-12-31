@@ -1,4 +1,4 @@
-package controller;
+package controller.base;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,4 +23,13 @@ public interface IBaseController {
     JSONObject getMovieByCategoryId(@RequestBody JSONObject request);
     JSONObject getMoviesByNameLike(@RequestBody JSONObject request);
     JSONObject listAllMovieCountByYear();
+    JSONObject listMovieByRanking(@RequestBody JSONObject request);
+    JSONObject listMovieByReview(@RequestBody JSONObject request);
+    JSONObject getActorMovieById(@RequestBody JSONObject request);
+    JSONObject getDirectorMovieById(@RequestBody JSONObject request);
+    JSONObject getCategoryMovieById(@RequestBody JSONObject request);
+    JSONObject getMovieByActorByYear(@RequestBody JSONObject request);
+    JSONObject getMovieByDirectorAndActor(@RequestBody JSONObject request);
+    JSONObject getMovieByYearInSummerOrderByRank(@RequestBody JSONObject request);
+    JSONObject getMovieByActOneByActTwo(@RequestBody JSONObject request);
 }

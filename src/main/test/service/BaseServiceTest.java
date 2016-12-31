@@ -150,4 +150,106 @@ public class BaseServiceTest {
         JSONObject res = service.listAllMovieCountByYear(DataBaseType.MSSQLSERVER);
         System.out.println(res.toJSONString());
     }
+
+    @Test
+    public void listByRanking() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("min", 22);
+        object.put("max", 10000);
+        JSONObject res = service.listMovieByRanking(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.listMovieByRanking(object, DataBaseType.IMPALA);
+        System.out.println(res);
+    }
+
+    @Test
+    public void listByReview() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("min", 10);
+        object.put("max", 50);
+        JSONObject res = service.listMovieByReview(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.listMovieByReview(object, DataBaseType.IMPALA);
+        System.out.println(res);
+    }
+
+    @Test
+    public void getActorById() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("staring", true);
+        object.put("actor_id", 11);
+        object.put("supporting", true);
+        JSONObject res = service.getActorMoviesById(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.getActorMoviesById(object, DataBaseType.IMPALA);
+        System.out.println(res);
+    }
+
+    @Test
+    public void getDirectorsById() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("director_id", 11);
+        JSONObject res = service.getDirectorsMovieById(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.getDirectorsMovieById(object, DataBaseType.IMPALA);
+        System.out.println(res);
+
+    }
+
+    @Test
+    public void getMovieByCategoryId() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("category_id", 1);
+        JSONObject res = service.getMovieByCategoryId(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.getMovieByCategoryId(object, DataBaseType.IMPALA);
+        System.out.println(res);
+
+    }
+
+    @Test
+    public void listMovieByActorIdAndYear() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("actor_id", 17);
+        object.put("year", "2001");
+        JSONObject res = service.listMovieByActorIdAndYear(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.listMovieByActorIdAndYear(object, DataBaseType.IMPALA);
+        System.out.println(res);
+
+    }
+
+    @Test
+    public void listMovieByDirectorAndActor() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("actor_id", 13589);
+        object.put("director_id", 4);
+        JSONObject res = service.listMovieByDirectorAndActor(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.listMovieByDirectorAndActor(object, DataBaseType.IMPALA);
+        System.out.println(res);
+
+    }
+
+    @Test
+    public void listMovieByYearInSummerOrderByRank() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("year", "2001");
+        JSONObject res = service.listMovieByYearInSummerOrderByRank(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.listMovieByYearInSummerOrderByRank(object, DataBaseType.IMPALA);
+        System.out.println(res);
+
+    }
+
+    @Test
+    public void getMovieByActOneByActTwo() throws Exception {
+        JSONObject object = new JSONObject();
+        object.put("actor_1_id", "2506");
+        object.put("actor_2_id", "43091");
+        JSONObject res = service.getMovieByActOneByActTwo(object, DataBaseType.MSSQLSERVER);
+        System.out.println(res.toJSONString());
+        res = service.getMovieByActOneByActTwo(object, DataBaseType.IMPALA);
+        System.out.println(res);
+    }
 }
