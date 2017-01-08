@@ -1009,35 +1009,35 @@ public class BaseService {
         switch (type) {
             case IMPALA:
                 rowSet = impalaTemplate.queryForRowSet(
-                    "( " +
-                            " SELECT " +
-                            "  snapshot_id, " +
-                            "  title, " +
-                            "  ranking, " +
-                            "  categories " +
-                            " FROM " +
-                            "  movietoactorbridge AS ab " +
-                            " JOIN movietodirectorbridge AS db ON ab.AmazonMovieSnapshot_snapshot_id = db.AmazonMovieSnapshot_snapshot_id " +
-                            " JOIN amazonmoviesnapshot AS sh ON ab.AmazonMovieSnapshot_snapshot_id = sh.snapshot_id " +
-                            " WHERE " +
-                            "  ab.ActorDim_actor_id =  " + actorId +
-                            " AND db.DirectorDim_director_id =  " + directorId +
-                            ") " +
-                            "UNION " +
-                            "( " +
-                            " SELECT " +
-                            "  snapshot_id, " +
-                            "  title, " +
-                            "  ranking, " +
-                            "  categories " +
-                            " FROM " +
-                            "  movietosupportingactorbridge AS sab " +
-                            " JOIN movietodirectorbridge AS db ON sab.AmazonMovieSnapshot_snapshot_id = db.AmazonMovieSnapshot_snapshot_id " +
-                            " JOIN amazonmoviesnapshot AS sh ON sab.AmazonMovieSnapshot_snapshot_id = sh.snapshot_id " +
-                            " WHERE " +
-                            "  sab.ActorDim_actor_id = " + actorId +
-                            " AND db.DirectorDim_director_id = " + directorId +
-                            ")"
+                        "( " +
+                                " SELECT " +
+                                "  snapshot_id, " +
+                                "  title, " +
+                                "  ranking, " +
+                                "  categories " +
+                                " FROM " +
+                                "  movietoactorbridge AS ab " +
+                                " JOIN movietodirectorbridge AS db ON ab.AmazonMovieSnapshot_snapshot_id = db.AmazonMovieSnapshot_snapshot_id " +
+                                " JOIN amazonmoviesnapshot AS sh ON ab.AmazonMovieSnapshot_snapshot_id = sh.snapshot_id " +
+                                " WHERE " +
+                                "  ab.ActorDim_actor_id =  " + actorId +
+                                " AND db.DirectorDim_director_id =  " + directorId +
+                                ") " +
+                                "UNION " +
+                                "( " +
+                                " SELECT " +
+                                "  snapshot_id, " +
+                                "  title, " +
+                                "  ranking, " +
+                                "  categories " +
+                                " FROM " +
+                                "  movietosupportingactorbridge AS sab " +
+                                " JOIN movietodirectorbridge AS db ON sab.AmazonMovieSnapshot_snapshot_id = db.AmazonMovieSnapshot_snapshot_id " +
+                                " JOIN amazonmoviesnapshot AS sh ON sab.AmazonMovieSnapshot_snapshot_id = sh.snapshot_id " +
+                                " WHERE " +
+                                "  sab.ActorDim_actor_id = " + actorId +
+                                " AND db.DirectorDim_director_id = " + directorId +
+                                ")"
                 );
                 break;
             case MYSQL:
@@ -1122,25 +1122,90 @@ public class BaseService {
             case MYSQL:
 //                break;
             case MSSQLSERVER:
-                rowSet = sqlServerTemplate.queryForRowSet(
-                        "SELECT DISTINCT  " +
-                                " (sh.snapshot_id),  " +
-                                " sh.title,  " +
-                                " sh.ranking  " +
-                                "FROM  " +
-                                " AmazonMovieDW.MVMK.datedim AS dd  " +
-                                "JOIN AmazonMovieDW.MVMK.amazonmoviesnapshot AS sh ON dd.date_year = ?  " +
-                                "WHERE  " +
-                                " (  " +
-                                "  dd.date_month = 6  " +
-                                "  OR dd.date_month = 7  " +
-                                "  OR dd.date_month = 8  " +
-                                " )  " +
-                                "AND sh.ranking IS NOT NULL  " +
-                                "AND sh.ranking <>- 1  " +
-                                "ORDER BY  " +
-                                " sh.ranking  ", year
-                );
+                if (year.equals("0")) {
+                    rowSet = sqlServerTemplate.queryForRowSet(
+                            "SELECT COUNT(DISTINCT(sh.snapshot_id))\n" +
+                                    "FROM\n" +
+                                    "\tAmazonMovieDW.MVMK.datedim AS dd\n" +
+                                    "JOIN AmazonMovieDW.MVMK.amazonmoviesnapshot AS sh \n" +
+                                    "ON dd.date_id = sh.date_id\n" +
+                                    "WHERE\n" +
+                                    "\t(\n" +
+                                    "\t\tdd.date_month = 6\n" +
+                                    "\t\tOR dd.date_month = 7\n" +
+                                    "\t\tOR dd.date_month = 8\n" +
+                                    "\t)\n" +
+                                    "AND sh.ranking IS NOT NULL\n" +
+                                    "AND sh.ranking <>- 1"
+                    );
+
+                    rowSet.next();
+                    result.put("count", rowSet.getInt(1));
+
+                    rowSet = sqlServerTemplate.queryForRowSet(
+                            "SELECT DISTINCT TOP 100 " +
+                                    " (sh.snapshot_id),  " +
+                                    " sh.title,  " +
+                                    " sh.ranking  " +
+                                    "FROM  " +
+                                    " AmazonMovieDW.MVMK.datedim AS dd  " +
+                                    "JOIN AmazonMovieDW.MVMK.amazonmoviesnapshot AS sh " +
+                                    "ON dd.date_id = sh.date_id " +
+                                    "WHERE  " +
+                                    " (  " +
+                                    "  dd.date_month = 6  " +
+                                    "  OR dd.date_month = 7  " +
+                                    "  OR dd.date_month = 8  " +
+                                    " )  " +
+                                    "AND sh.ranking IS NOT NULL  " +
+                                    "AND sh.ranking <> -1  " +
+                                    "ORDER BY  " +
+                                    " sh.ranking  "
+                    );
+
+                }
+                else {
+                    rowSet = sqlServerTemplate.queryForRowSet(
+                            "SELECT COUNT(DISTINCT(sh.snapshot_id))\n" +
+                                    "FROM\n" +
+                                    "\tAmazonMovieDW.MVMK.datedim AS dd\n" +
+                                    "JOIN AmazonMovieDW.MVMK.amazonmoviesnapshot AS sh \n" +
+                                    "ON dd.date_id = sh.date_id AND dd.date_year = ?\n" +
+                                    "WHERE\n" +
+                                    "\t(\n" +
+                                    "\t\tdd.date_month = 6\n" +
+                                    "\t\tOR dd.date_month = 7\n" +
+                                    "\t\tOR dd.date_month = 8\n" +
+                                    "\t)\n" +
+                                    "AND sh.ranking IS NOT NULL\n" +
+                                    "AND sh.ranking <>- 1", year
+                    );
+
+                    rowSet.next();
+                    result.put("count", rowSet.getInt(1));
+
+                    rowSet = sqlServerTemplate.queryForRowSet(
+                            "SELECT DISTINCT TOP 100 " +
+                                    " (sh.snapshot_id),  " +
+                                    " sh.title,  " +
+                                    " sh.ranking  " +
+                                    "FROM  " +
+                                    " AmazonMovieDW.MVMK.datedim AS dd  " +
+                                    "JOIN AmazonMovieDW.MVMK.amazonmoviesnapshot AS sh " +
+                                    "ON dd.date_year = ?  " +
+                                    "AND dd.date_id = sh.date_id " +
+                                    "WHERE  " +
+                                    " (  " +
+                                    "  dd.date_month = 6  " +
+                                    "  OR dd.date_month = 7  " +
+                                    "  OR dd.date_month = 8  " +
+                                    " )  " +
+                                    "AND sh.ranking IS NOT NULL  " +
+                                    "AND sh.ranking <> -1  " +
+                                    "ORDER BY  " +
+                                    " sh.ranking  ", year
+                    );
+                }
                 break;
             case HIVE:
                 break;
@@ -1296,7 +1361,7 @@ public class BaseService {
                                 "    AND ranking IS NOT NULL  " +
                                 "  )  " +
                                 "ORDER BY  " +
-                                "  ranking", actor1Id, actor2Id, actor2Id, actor1Id,actor1Id,actor2Id,actor2Id,actor1Id
+                                "  ranking", actor1Id, actor2Id, actor2Id, actor1Id, actor1Id, actor2Id, actor2Id, actor1Id
                 );
                 break;
             case HIVE:

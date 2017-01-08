@@ -222,8 +222,8 @@ public class BaseServiceTest {
     @Test
     public void listMovieByDirectorAndActor() throws Exception {
         JSONObject object = new JSONObject();
-        object.put("actor_id", 13589);
-        object.put("director_id", 4);
+        object.put("actor_id", 1);
+        object.put("director_id", 1);
         JSONObject res = service.listMovieByDirectorAndActor(object, DataBaseType.MSSQLSERVER);
         System.out.println(res.toJSONString());
         res = service.listMovieByDirectorAndActor(object, DataBaseType.IMPALA);
@@ -234,11 +234,11 @@ public class BaseServiceTest {
     @Test
     public void listMovieByYearInSummerOrderByRank() throws Exception {
         JSONObject object = new JSONObject();
-        object.put("year", "2001");
+        object.put("year", 0);
         JSONObject res = service.listMovieByYearInSummerOrderByRank(object, DataBaseType.MSSQLSERVER);
         System.out.println(res.toJSONString());
-        res = service.listMovieByYearInSummerOrderByRank(object, DataBaseType.IMPALA);
-        System.out.println(res);
+//        res = service.listMovieByYearInSummerOrderByRank(object, DataBaseType.IMPALA);
+//        System.out.println(res);
 
     }
 
